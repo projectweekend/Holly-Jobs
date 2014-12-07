@@ -3,7 +3,7 @@ var http = require( "http" );
 var connections = require( "./lib/connections" );
 var web = require( "./lib/web" );
 
-
+var database = connections.database();
 var messageBroker = connections.jackrabbit();
 var server = web( messageBroker );
 
