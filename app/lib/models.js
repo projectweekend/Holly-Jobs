@@ -83,8 +83,8 @@ exports.SensorReading = mongoose.model( 'SensorReading', SensorReadingSchema );
 
 var SystemReadingSchema = Schema( {
     date: Date,
-    temp_c: Number,
-    temp_f: Number
+    cpu_temp_c: Number,
+    cpu_temp_f: Number
 } );
 
 exports.SystemReading = mongoose.model( 'SystemReading', SystemReadingSchema );
