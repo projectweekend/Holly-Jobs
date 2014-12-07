@@ -26,3 +26,11 @@ node_modules
 
 # Users Environment Variables
 .lock-wscript
+
+# Sublime Text project files
+*.sublime-project
+*.sublime-workspace
+
+# Python stuff
+env
+*.pyc
