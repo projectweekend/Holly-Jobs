@@ -13,19 +13,23 @@ module.exports = function ( messageBroker ) {
 
     // log sensor data job
     var getSensorData = function ( done ) {
+        console.log( "Request sent: sensor.get" );
         messageBroker.publish( "sensor.get", { serialMessage: "A" }, function ( err, data ) {
             if ( err ) {
                 return done( err );
             }
+            console.log( "Response received: sensor.get" );
             return done( null, data );
         } );
     };
 
     var saveSensorData = function ( sensorData, done ) {
+        console.log( "Request sent: SensorReading.create" );
         models.SensorReading.create( sensorData, function ( err, data ) {
             if ( err ) {
                 return done( err );
             }
+            console.log( "Response received: SensorReading.create" );
             return done( null, data );
         } );
     };
@@ -34,9 +38,11 @@ module.exports = function ( messageBroker ) {
         async.waterfall( [ getSensorData, saveSensorData ], function ( err, data ) {
             if ( err ) {
                 // add logging here
-                return res.json( 500 );
+                return res.status( 500 ).json();
             }
-            return res.json( 200 );
+            console.log( "Sensor Reading" );
+            console.log( data );
+            return res.status( 200 ).json();
         } );
     } );
 
@@ -64,9 +70,11 @@ module.exports = function ( messageBroker ) {
         async.waterfall( [ getSystemData, saveSystemData ], function ( err, data ) {
             if ( err ) {
                 // add logging here
-                return res.json( 500 );
+                return res.status( 500 ).json();
             }
-            return res.json(    200 );
+            console.log( "System Reading" );
+            console.log( data );
+            return res.status( 200 ).json();
         } );
     } );
 
