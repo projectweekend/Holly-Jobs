@@ -1,13 +1,11 @@
 var async = require( "async" );
 var moment = require( "moment" );
+var config = require( "./lib/configuration" );
 var connections = require( "./lib/connections" );
 var models = require( "./lib/models" );
 
 
-var interval = parseInt( process.env.SENSOR_READING_INTERVAL, 10 );
-var minute = parseInt( process.env.SENSOR_READING_MINUTE, 10 );
-
-var logger = connections.logger( [ "Holly-Jobs-Sensor-Reading" ] );
+var logger = connections.logger();
 var db = connections.database();
 var broker = connections.jackrabbit();
 
@@ -15,7 +13,7 @@ broker.once( "connected", createQueue );
 
 
 function createQueue () {
-    broker.create( "sensor.get", run );
+    broker.create( config.sensorQueue, run );
 }
 
 
@@ -23,11 +21,11 @@ function run () {
     var previousMinute;
     setInterval( function () {
         var currentMinute = moment().minutes();
-        if ( previousMinute !== currentMinute && currentMinute % minute === 0 ) {
+        if ( previousMinute !== currentMinute && currentMinute % config.sensorReadingMinute === 0 ) {
             previousMinute = currentMinute;
             processSensorReading();
         }
-    }, interval );
+    }, config.sensorReadingInterval );
 }
 
 
@@ -43,7 +41,7 @@ function processSensorReading () {
 
 
 function readSensor ( done ) {
-    broker.publish( "sensor.get", { serialMessage: "A" }, function ( err, data ) {
+    broker.publish( config.sensorQueue, { serialMessage: "A" }, function ( err, data ) {
         if ( err ) {
             return done( err );
         }
