@@ -1,4 +1,10 @@
-Holly-Jobs
-==========
+### Sensor Reading Configuration
 
-Scheduled jobs collecting data for Holly (https://github.com/projectweekend/Holly)
+The following environment variables are used by `SensorReading.js`:
+
+* `SENSOR_READING_INTERVAL`
+* `SENSOR_READING_MINUTE`
+* `LOGGLY_TOKEN`
+* `LOGGLY_SUBDOMAIN`
+* `RABBIT_URL`
+* `MONGO_URL`
