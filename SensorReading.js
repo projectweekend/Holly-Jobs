@@ -5,7 +5,7 @@ var connections = require( "./lib/connections" );
 var models = require( "./lib/models" );
 
 
-var logger = connections.logger();
+var logger = connections.logger( config.sensorReadingLogglyTag );
 var db = connections.database();
 var broker = connections.jackrabbit();
 
@@ -25,7 +25,7 @@ function run () {
             previousMinute = currentMinute;
             processSensorReading();
         }
-    }, config.sensorReadingInterval );
+    }, config.runInterval );
 }
 
 
