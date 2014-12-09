@@ -35,6 +35,7 @@ function processSensorReading () {
             logger.log( err );
             process.exit( 1 );
         }
+        console.log( result );
     } );
 }
 
@@ -50,7 +51,7 @@ function readSensor ( done ) {
 
 
 function saveData ( sensorData, done ) {
-    models.SensorReading.create( sensorData, function ( err, data ) {
+    models.SensorReading.add( sensorData, function ( err, data ) {
         if ( err ) {
             return done( err );
         }
