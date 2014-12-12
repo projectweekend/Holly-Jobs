@@ -17,7 +17,7 @@ function createQueue () {
 }
 
 
-function run () {
+function main () {
     var previousMinute;
     setInterval( function () {
         var currentMinute = moment().minutes();
@@ -57,4 +57,9 @@ function saveData ( sensorData, done ) {
         }
         return done( null, data );
     } );
+}
+
+
+if ( require.main === module ) {
+    main();
 }
