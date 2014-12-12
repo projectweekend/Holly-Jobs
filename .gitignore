@@ -34,3 +34,5 @@ node_modules
 # Python stuff
 env
 *.pyc
+
+data_test.js
