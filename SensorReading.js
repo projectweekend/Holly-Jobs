@@ -1,5 +1,6 @@
 var async = require( "async" );
 var moment = require( "moment" );
+var throng = require( "throng" );
 var config = require( "./lib/configuration" );
 var connections = require( "./lib/connections" );
 var models = require( "./lib/models" );
@@ -61,5 +62,8 @@ function saveData ( sensorData, done ) {
 
 
 if ( require.main === module ) {
-    main();
+    throng( main, {
+        workers: 1,
+        lifetime: Infinity
+    } );
 }
