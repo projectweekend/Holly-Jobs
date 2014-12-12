@@ -62,8 +62,13 @@ function saveData ( sensorData, done ) {
 
 
 if ( require.main === module ) {
-    throng( main, {
-        workers: 1,
-        lifetime: Infinity
-    } );
+    if ( config.debugMode ) {
+        console.log( "Running in debug mode..." );
+        main();
+    } else {
+        throng( main, {
+            workers: 1,
+            lifetime: Infinity
+        } );
+    }
 }
