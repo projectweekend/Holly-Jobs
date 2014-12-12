@@ -36,6 +36,7 @@ function processSensorReading () {
             logger.log( err );
             process.exit( 1 );
         }
+        console.log( result );
     } );
 }
 
