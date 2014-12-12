@@ -14,7 +14,7 @@ broker.once( "connected", createQueue );
 
 
 function createQueue () {
-    broker.create( config.sensorQueue, run );
+    broker.create( config.sensorQueue, main );
 }
 
 
