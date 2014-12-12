@@ -33,6 +33,7 @@ function main () {
 function processSensorReading () {
     async.waterfall( [ readSensor, saveData ], function ( err, result ) {
         if ( err ) {
+            console.log( err );
             logger.log( err );
             process.exit( 1 );
         }
