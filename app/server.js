@@ -1,8 +1,7 @@
-var http = require( "http" );
-
 var connections = require( "./lib/connections" );
 var config = require( "./lib/configuration" );
 var web = require( "./lib/web" );
+
 
 var server;
 var database = connections.database();
