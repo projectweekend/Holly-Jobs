@@ -3,7 +3,7 @@ var async = require( "async" );
 var models = require( "./models" );
 
 
-module.exports = function ( messageBroker ) {
+module.exports = function ( messageBroker, logger ) {
 
     var app = express();
 
@@ -37,7 +37,7 @@ module.exports = function ( messageBroker ) {
     app.get( "/job/sensor-reading", function ( req, res ) {
         async.waterfall( [ getSensorData, saveSensorData ], function ( err, data ) {
             if ( err ) {
-                // add logging here
+                logger.log( err );
                 return res.status( 500 ).json();
             }
             console.log( "Sensor Reading" );
@@ -69,7 +69,7 @@ module.exports = function ( messageBroker ) {
     app.get( "/job/system-reading", function ( req, res ) {
         async.waterfall( [ getSystemData, saveSystemData ], function ( err, data ) {
             if ( err ) {
-                // add logging here
+                logger.log( err );
                 return res.status( 500 ).json();
             }
             console.log( "System Reading" );
