@@ -13,6 +13,16 @@ var SensorReadingSchema = Schema( {
 } );
 
 SensorReadingSchema.statics = {
+    add: function ( sensorReadingData, cb ) {
+        // Override the date here in case time from Raspberry Pi is off
+        sensorReadingData.data = new Date();
+        this.create( sensorReadingData, function ( err, newSensorReading ) {
+            if ( err ) {
+                return cb( err );
+            }
+            return cb( null, newSensorReading );
+        } );
+    },
     calcStatsForDateRange: function ( startDate, endDate, cb ) {
         var matchOptions = {
             date: {
@@ -86,5 +96,18 @@ var SystemReadingSchema = Schema( {
     cpu_temp_c: Number,
     cpu_temp_f: Number
 } );
+
+SystemReadingSchema.statics = {
+    add: function ( systemReadingData, cb ) {
+        // Override the date here in case time from Raspberry Pi is off
+        systemReadingData.data = new Date();
+        this.create( systemReadingData, function ( err, newSystemReading ) {
+            if ( err ) {
+                return cb( err );
+            }
+            return cb( null, newSystemReading );
+        } );
+    }
+};
 
 exports.SystemReading = mongoose.model( 'SystemReading', SystemReadingSchema );
