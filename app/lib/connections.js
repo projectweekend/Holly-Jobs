@@ -1,28 +1,30 @@
 var jr = require( "jackrabbit" );
 var loggly = require( "loggly" );
 var mongoose = require( "mongoose" );
-
-
-var logglyToken = process.env.LOGGLY_TOKEN;
-var logglySubdomain = process.env.LOGGLY_SUBDOMAIN;
-var rabbitURL = process.env.RABBIT_URL;
-var mongoURL = process.env.MONGO_URL;
+var config = require( "./configuration" );
 
 
 exports.jackrabbit = function () {
-    return jr( rabbitURL, 1 );
+    return jr( config.rabbitURL, 1 );
 };
 
 
-exports.logger = function ( tags ) {
+exports.logger = function ( tag ) {
+    if ( config.debugMode ) {
+        return {
+            log: function ( data ) {
+                console.log( data );
+            }
+        };
+    }
     return loggly.createClient( {
-        token: logglyToken,
-        subdomain: logglySubdomain,
-        tags: tags
+        token: config.logglyToken,
+        subdomain: config.logglySubdomain,
+        tags: [ tag ]
     } );
 };
 
 
 exports.database = function () {
-    return mongoose.connect( mongoURL );
+    return mongoose.connect( config.mongoURL );
 };
