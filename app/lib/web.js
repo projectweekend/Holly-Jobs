@@ -11,25 +11,21 @@ module.exports = function ( messageBroker, logger ) {
     messageBroker.create( "system.get" );
 
 
-    // log sensor data job
+    // sensor data job
     var getSensorData = function ( done ) {
-        console.log( "Request sent: sensor.get" );
         messageBroker.publish( "sensor.get", { serialMessage: "A" }, function ( err, data ) {
             if ( err ) {
                 return done( err );
             }
-            console.log( "Response received: sensor.get" );
             return done( null, data );
         } );
     };
 
     var saveSensorData = function ( sensorData, done ) {
-        console.log( "Request sent: SensorReading.create" );
         models.SensorReading.create( sensorData, function ( err, data ) {
             if ( err ) {
                 return done( err );
             }
-            console.log( "Response received: SensorReading.create" );
             return done( null, data );
         } );
     };
@@ -40,14 +36,12 @@ module.exports = function ( messageBroker, logger ) {
                 logger.log( err );
                 return res.status( 500 ).json();
             }
-            console.log( "Sensor Reading" );
-            console.log( data );
-            return res.status( 200 ).json();
+            return res.status( 200 ).json( data );
         } );
     } );
 
 
-    // log system data job
+    // system data job
     var getSystemData = function ( done ) {
         messageBroker.publish( "system.get", {}, function ( err, data ) {
             if ( err ) {
@@ -72,9 +66,7 @@ module.exports = function ( messageBroker, logger ) {
                 logger.log( err );
                 return res.status( 500 ).json();
             }
-            console.log( "System Reading" );
-            console.log( data );
-            return res.status( 200 ).json();
+            return res.status( 200 ).json( data );
         } );
     } );
 
