@@ -10,15 +10,18 @@ var logger = connections.logger( config.sensorReadingLogglyTag );
 var db = connections.database();
 var broker = connections.jackrabbit();
 
-broker.once( "connected", createQueue );
 
-
-function createQueue () {
-    broker.create( config.sensorQueue, main );
+function main () {
+    broker.once( "connected", createQueue );
 }
 
 
-function main () {
+function createQueue () {
+    broker.create( config.sensorQueue, run );
+}
+
+
+function run () {
     var previousMinute;
     setInterval( function () {
         var currentMinute = moment().minutes();
@@ -33,11 +36,10 @@ function main () {
 function processSensorReading () {
     async.waterfall( [ readSensor, saveData ], function ( err, result ) {
         if ( err ) {
-            console.log( err );
             logger.log( err );
             process.exit( 1 );
         }
-        console.log( result );
+        logger.log( result );
     } );
 }
 
