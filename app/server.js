@@ -3,6 +3,10 @@ var config = require( "./lib/configuration" );
 var web = require( "./lib/web" );
 
 
+if ( config.debugMode ) {
+    console.log( "DEBUG mode..." );
+}
+
 var server;
 var database = connections.database();
 var messageBroker = connections.jackrabbit();
