@@ -1,6 +1,7 @@
 var http = require( "http" );
 
 var connections = require( "./lib/connections" );
+var config = require( "./lib/configuration" );
 var web = require( "./lib/web" );
 
 var server;
@@ -14,7 +15,7 @@ process.on( "SIGTERM", exit );
 
 function serve () {
     server = web( messageBroker );
-    server.listen( process.env.PORT );
+    server.listen( config.port );
 }
 
 

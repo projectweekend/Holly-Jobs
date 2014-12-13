@@ -34,7 +34,7 @@ module.exports = function ( messageBroker ) {
         } );
     };
 
-    app.get( "/job/log-sensor-reading", function ( req, res ) {
+    app.get( "/job/sensor-reading", function ( req, res ) {
         async.waterfall( [ getSensorData, saveSensorData ], function ( err, data ) {
             if ( err ) {
                 // add logging here
@@ -66,7 +66,7 @@ module.exports = function ( messageBroker ) {
         } );
     };
 
-    app.get( "/job/log-system-reading", function ( req, res ) {
+    app.get( "/job/system-reading", function ( req, res ) {
         async.waterfall( [ getSystemData, saveSystemData ], function ( err, data ) {
             if ( err ) {
                 // add logging here

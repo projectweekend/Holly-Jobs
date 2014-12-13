@@ -22,5 +22,6 @@ module.exports = {
     logglyTag: process.env.LOGGLY_TAG || "Holly-Jobs-App",
     sensorQueue: process.env.SENSOR_QUEUE || "sensor.get",
     systemQueue: process.env.SYSTEM_QUEUE || "system.get",
-    debugMode: process.env.DEBUG === "true"
+    debugMode: process.env.DEBUG === "true",
+    port: process.env.PORT || 4000
 };
