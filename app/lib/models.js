@@ -1,8 +1,34 @@
 var mongoose = require( 'mongoose' );
-
 var Schema = mongoose.Schema;
 
 
+// Sensor Stats
+var SensorStatsSchema = Schema( {
+    date: Date,
+    type: String,
+    avg_temp_c: Number,
+    min_temp_c: Number,
+    max_temp_c: Number,
+    avg_temp_f: Number,
+    min_temp_f: Number,
+    max_temp_f: Number,
+    avg_humidity: Number,
+    min_humidity: Number,
+    max_humidity: Number,
+    avg_pressure: Number,
+    min_pressure: Number,
+    max_pressure: Number,
+    avg_luminosity: Number,
+    min_luminosity: Number,
+    max_luminosity: Number
+} );
+
+SensorStatsSchema.index( { date: 1, type: 1 }, { unique: true } );
+
+var SensorStats = mongoose.model( 'SensorStats', SensorStatsSchema );
+
+
+// Sensor Reading
 var SensorReadingSchema = Schema( {
     date: Date,
     temp_c: Number,
@@ -23,11 +49,11 @@ SensorReadingSchema.statics = {
             return cb( null, newSensorReading );
         } );
     },
-    calcStatsForDateRange: function ( startDate, endDate, cb ) {
+    calcStatsForDateRange: function ( options, cb ) {
         var matchOptions = {
             date: {
-                $gte: startDate,
-                $lte: endDate
+                $gte: options.startDate,
+                $lte: options.endDate
             }
         };
 
@@ -80,17 +106,33 @@ SensorReadingSchema.statics = {
             }
         };
 
-        var q = this.aggregate()
-                    .match( matchOptions )
-                    .group( groupOptions );
+        this.aggregate()
+            .match( matchOptions )
+            .group( groupOptions )
+            .exec( function ( err, data ) {
+                if ( err ) {
+                    return cb( err );
+                }
 
-        q.exec( cb );
+                data = data[ 0 ];
+                delete data._id;
+                data.date = options.date;
+                data.type = options.type;
+
+                SensorStats.create( data, function ( err, newSensorStat ) {
+                    if ( err ) {
+                        return cb( err );
+                    }
+                    return cb( null, newSensorStat );
+                } );
+            } );
     }
 };
 
-exports.SensorReading = mongoose.model( 'SensorReading', SensorReadingSchema );
+var SensorReading = mongoose.model( 'SensorReading', SensorReadingSchema );
 
 
+// System Reading
 var SystemReadingSchema = Schema( {
     date: Date,
     cpu_temp_c: Number,
@@ -110,4 +152,9 @@ SystemReadingSchema.statics = {
     }
 };
 
-exports.SystemReading = mongoose.model( 'SystemReading', SystemReadingSchema );
+var SystemReading = mongoose.model( 'SystemReading', SystemReadingSchema );
+
+
+exports.SensorStats = SensorStats;
+exports.SystemReading = SystemReading;
+exports.SensorReading = SensorReading;
