@@ -66,42 +66,19 @@ var handleSystemReading = function ( messageBroker, logger, app ) {
 };
 
 
-var handleDailySensorStats = function ( messageBroker, logger, app ) {
-    app.get( "/job/sensor-stats/day", function ( req, res ) {
+var handleDailyStats = function ( options, logger, app ) {
+    app.get( options.path, function ( req, res ) {
         var yesterdayStart = moment().subtract( 1, "day" ).startOf( "day" ).toDate();
         var yesterdayEnd = moment().subtract( 1, "day" ).endOf( "day" ).toDate();
 
-        var options = {
+        var statCalcOptions = {
             startDate: yesterdayStart,
             endDate: yesterdayEnd,
             date: yesterdayStart,
             type: "day"
         };
 
-        models.SensorReading.calcStatsForDateRange( options, function ( err, data ) {
-            if ( err ) {
-                logger.log( err );
-                return res.status( 500 ).json();
-            }
-            return res.status( 200 ).json( data );
-        } );
-    } );
-};
-
-
-var handleDailySystemStats = function ( messageBroker, logger, app ) {
-    app.get( "/job/system-stats/day", function ( req, res ) {
-        var yesterdayStart = moment().subtract( 1, "day" ).startOf( "day" ).toDate();
-        var yesterdayEnd = moment().subtract( 1, "day" ).endOf( "day" ).toDate();
-
-        var options = {
-            startDate: yesterdayStart,
-            endDate: yesterdayEnd,
-            date: yesterdayStart,
-            type: "day"
-        };
-
-        models.SystemReading.calcStatsForDateRange( options, function ( err, data ) {
+        options.model.calcStatsForDateRange( statCalcOptions, function ( err, data ) {
             if ( err ) {
                 logger.log( err );
                 return res.status( 500 ).json();
@@ -121,8 +98,16 @@ module.exports = function ( messageBroker, logger ) {
 
     handleSensorReading( messageBroker, logger, app );
     handleSystemReading( messageBroker, logger, app );
-    handleDailySensorStats( messageBroker, logger, app );
-    handleDailySystemStats( messageBroker, logger, app );
+
+    handleDailyStats( {
+        path: "/job/sensor-stats/day",
+        model: models.SensorReading
+    }, logger, app );
+
+    handleDailyStats( {
+        path: "/job/system-stats/day",
+        model: models.SystemReading
+    }, logger, app );
 
     return app;
 
