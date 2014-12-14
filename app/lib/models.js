@@ -114,6 +114,10 @@ SensorReadingSchema.statics = {
                     return cb( err );
                 }
 
+                if ( data.length === 0 ) {
+                    return cb( new Error( "No data available" ) );
+                }
+
                 data = data[ 0 ];
                 delete data._id;
                 data.date = options.date;
@@ -203,6 +207,10 @@ SystemReadingSchema.statics = {
             .exec( function ( err, data ) {
                 if ( err ) {
                     return cb( err );
+                }
+
+                if ( data.length === 0 ) {
+                    return cb( new Error( "No data available" ) );
                 }
 
                 data = data[ 0 ];
