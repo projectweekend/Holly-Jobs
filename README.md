@@ -25,3 +25,23 @@ API Routes
 #### Calculate Daily System Stats Job
 
 **GET:** `/job/system-stats/day`
+
+
+#### Calculate Weekly Sensor Stats Job
+
+**GET:** `/job/sensor-stats/week`
+
+
+#### Calculate Weekly System Stats Job
+
+**GET:** `/job/system-stats/week`
+
+
+#### Calculate Monthly Sensor Stats Job
+
+**GET:** `/job/sensor-stats/month`
+
+
+#### Calculate Monthly System Stats Job
+
+**GET:** `/job/system-stats/month`
