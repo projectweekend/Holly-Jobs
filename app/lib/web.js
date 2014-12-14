@@ -89,6 +89,53 @@ var handleDailyStats = function ( options, logger, app ) {
 };
 
 
+var handleWeeklyStats = function ( options, logger, app ) {
+    app.get( options.path, function ( req, res ) {
+        var yesterdayStart = moment().subtract( 1, "day" ).startOf( "day" ).toDate();
+        var yesterdayEnd = moment().subtract( 1, "day" ).endOf( "day" ).toDate();
+        var weekAgoStart = moment().subtract( 7, "days").startOf( "day" ).toDate();
+
+        var statCalcOptions = {
+            startDate: weekAgoStart,
+            endDate: yesterdayEnd,
+            date: yesterdayStart,
+            type: "week"
+        };
+
+        options.model.calcStatsForDateRange( statCalcOptions, function ( err, data ) {
+            if ( err ) {
+                logger.log( err );
+                return res.status( 500 ).json();
+            }
+            return res.status( 200 ).json( data );
+        } );
+    } );
+};
+
+
+var handleMonthlyStats = function ( options, logger, app ) {
+    app.get( options.path, function ( req, res ) {
+        var monthStart = moment().subtract( 1, "day" ).startOf( "month" ).toDate();
+        var monthEnd = moment().subtract( 1, "day" ).endOf( "month" ).toDate();
+
+        var statCalcOptions = {
+            startDate: monthStart,
+            endDate: monthEnd,
+            date: monthStart,
+            type: "month"
+        };
+
+        options.model.calcStatsForDateRange( statCalcOptions, function ( err, data ) {
+            if ( err ) {
+                logger.log( err );
+                return res.status( 500 ).json();
+            }
+            return res.status( 200 ).json( data );
+        } );
+    } );
+};
+
+
 module.exports = function ( messageBroker, logger ) {
 
     var app = express();
@@ -106,6 +153,26 @@ module.exports = function ( messageBroker, logger ) {
 
     handleDailyStats( {
         path: "/job/system-stats/day",
+        model: models.SystemReading
+    }, logger, app );
+
+    handleWeeklyStats( {
+        path: "/job/sensor-stats/week",
+        model: models.SensorReading
+    }, logger, app );
+
+    handleWeeklyStats( {
+        path: "/job/system-stats/week",
+        model: models.SystemReading
+    }, logger, app );
+
+    handleMonthlyStats( {
+        path: "/job/sensor-stats/month",
+        model: models.SensorReading
+    }, logger, app );
+
+    handleMonthlyStats( {
+        path: "/job/system-stats/month",
         model: models.SystemReading
     }, logger, app );
 
