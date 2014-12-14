@@ -3,15 +3,7 @@ var async = require( "async" );
 var models = require( "./models" );
 
 
-module.exports = function ( messageBroker, logger ) {
-
-    var app = express();
-
-    messageBroker.create( "sensor.get" );
-    messageBroker.create( "system.get" );
-
-
-    // sensor data job
+var handleSensorReading = function ( messageBroker, app ) {
     var getSensorData = function ( done ) {
         messageBroker.publish( "sensor.get", { serialMessage: "A" }, function ( err, data ) {
             if ( err ) {
@@ -39,9 +31,10 @@ module.exports = function ( messageBroker, logger ) {
             return res.status( 200 ).json( data );
         } );
     } );
+};
 
 
-    // system data job
+var handleSystemReading = function ( messageBroker, app ) {
     var getSystemData = function ( done ) {
         messageBroker.publish( "system.get", {}, function ( err, data ) {
             if ( err ) {
@@ -69,6 +62,18 @@ module.exports = function ( messageBroker, logger ) {
             return res.status( 200 ).json( data );
         } );
     } );
+};
+
+
+module.exports = function ( messageBroker, logger ) {
+
+    var app = express();
+
+    messageBroker.create( "sensor.get" );
+    messageBroker.create( "system.get" );
+
+    handleSensorReading( messageBroker, app );
+    handleSystemReading( messageBroker, app );
 
     return app;
 
