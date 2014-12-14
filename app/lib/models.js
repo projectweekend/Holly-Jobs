@@ -132,6 +132,23 @@ SensorReadingSchema.statics = {
 var SensorReading = mongoose.model( 'SensorReading', SensorReadingSchema );
 
 
+// System Stats
+var SystemStatsSchema = Schema( {
+    date: Date,
+    type: String,
+    avg_cpu_temp_c: Number,
+    min_cpu_temp_c: Number,
+    max_cpu_temp_c: Number,
+    avg_cpu_temp_f: Number,
+    min_cpu_temp_f: Number,
+    max_cpu_temp_f: Number
+} );
+
+SystemStatsSchema.index( { date: 1, type: 1 }, { unique: true } );
+
+var SystemStats = mongoose.model( 'SystemStats', SystemStatsSchema );
+
+
 // System Reading
 var SystemReadingSchema = Schema( {
     date: Date,
@@ -156,5 +173,6 @@ var SystemReading = mongoose.model( 'SystemReading', SystemReadingSchema );
 
 
 exports.SensorStats = SensorStats;
-exports.SystemReading = SystemReading;
 exports.SensorReading = SensorReading;
+exports.SystemStats = SystemStats;
+exports.SystemReading = SystemReading;
