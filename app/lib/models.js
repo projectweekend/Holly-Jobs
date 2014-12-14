@@ -166,6 +166,58 @@ SystemReadingSchema.statics = {
             }
             return cb( null, newSystemReading );
         } );
+    },
+    calcStatsForDateRange: function ( options, cb ) {
+        var matchOptions = {
+            date: {
+                $gte: options.startDate,
+                $lte: options.endDate
+            }
+        };
+
+        var groupOptions = {
+            _id: null,
+            avg_cpu_temp_c: {
+                $avg: "$cpu_temp_c"
+            },
+            min_cpu_temp_c: {
+                $min: "$cpu_temp_c"
+            },
+            max_cpu_temp_c: {
+                $max: "$cpu_temp_c"
+            },
+            avg_cpu_temp_f: {
+                $avg: "$cpu_temp_f"
+            },
+            min_cpu_temp_f: {
+                $min: "$cpu_temp_f"
+            },
+            max_cpu_temp_f: {
+                $max: "$cpu_temp_f"
+            }
+        };
+
+        this.aggregate()
+            .match( matchOptions )
+            .group( groupOptions )
+            .exec( function ( err, data ) {
+                if ( err ) {
+                    return cb( err );
+                }
+
+                data = data[ 0 ];
+                delete data._id;
+                data.date = options.date;
+                data.type = options.type;
+
+                SystemStats.create( data, function ( err, newSystemStat ) {
+                    if ( err ) {
+                        return cb( err );
+                    }
+                    return cb( null, newSystemStat );
+                } );
+            } );
+
     }
 };
 
