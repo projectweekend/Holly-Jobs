@@ -89,6 +89,29 @@ var handleDailySensorStats = function ( messageBroker, logger, app ) {
 };
 
 
+var handleDailySystemStats = function ( messageBroker, logger, app ) {
+    app.get( "/job/system-stats/day", function ( req, res ) {
+        var yesterdayStart = moment().subtract( 1, "day" ).startOf( "day" ).toDate();
+        var yesterdayEnd = moment().subtract( 1, "day" ).endOf( "day" ).toDate();
+
+        var options = {
+            startDate: yesterdayStart,
+            endDate: yesterdayEnd,
+            date: yesterdayStart,
+            type: "day"
+        };
+
+        models.SystemReading.calcStatsForDateRange( options, function ( err, data ) {
+            if ( err ) {
+                logger.log( err );
+                return res.status( 500 ).json();
+            }
+            return res.status( 200 ).json( data );
+        } );
+    } );
+};
+
+
 module.exports = function ( messageBroker, logger ) {
 
     var app = express();
@@ -99,6 +122,7 @@ module.exports = function ( messageBroker, logger ) {
     handleSensorReading( messageBroker, logger, app );
     handleSystemReading( messageBroker, logger, app );
     handleDailySensorStats( messageBroker, logger, app );
+    handleDailySystemStats( messageBroker, logger, app );
 
     return app;
 
