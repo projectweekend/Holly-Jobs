@@ -91,14 +91,13 @@ var handleDailyStats = function ( options, logger, app ) {
 
 var handleWeeklyStats = function ( options, logger, app ) {
     app.get( options.path, function ( req, res ) {
-        var yesterdayStart = moment().subtract( 1, "day" ).startOf( "day" ).toDate();
-        var yesterdayEnd = moment().subtract( 1, "day" ).endOf( "day" ).toDate();
-        var weekAgoStart = moment().subtract( 7, "days").startOf( "day" ).toDate();
+        var lastWeekStart = moment().subtract( 1, "week").startOf( "week" ).toDate();
+        var lastWeekEnd = moment().subtract( 1, "week").endOf( "week" ).toDate();
 
         var statCalcOptions = {
-            startDate: weekAgoStart,
-            endDate: yesterdayEnd,
-            date: yesterdayStart,
+            startDate: lastWeekStart,
+            endDate: lastWeekEnd,
+            date: lastWeekStart,
             type: "week"
         };
 
@@ -115,13 +114,13 @@ var handleWeeklyStats = function ( options, logger, app ) {
 
 var handleMonthlyStats = function ( options, logger, app ) {
     app.get( options.path, function ( req, res ) {
-        var monthStart = moment().subtract( 1, "day" ).startOf( "month" ).toDate();
-        var monthEnd = moment().subtract( 1, "day" ).endOf( "month" ).toDate();
+        var lastMonthStart = moment().subtract( 1, "month" ).startOf( "month" ).toDate();
+        var lastMonthEnd = moment().subtract( 1, "month" ).startOf( "month" ).toDate();
 
         var statCalcOptions = {
-            startDate: monthStart,
-            endDate: monthEnd,
-            date: monthStart,
+            startDate: lastMonthStart,
+            endDate: lastMonthEnd,
+            date: lastMonthStart,
             type: "month"
         };
 
