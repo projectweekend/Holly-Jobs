@@ -2,11 +2,12 @@ var express = require( "express" );
 var async = require( "async" );
 var moment = require( "moment" );
 var models = require( "./models" );
+var config = require( "./configuration" );
 
 
 var handleSensorReading = function ( messageBroker, logger, app ) {
     var getSensorData = function ( done ) {
-        messageBroker.publish( "sensor.get", { serialMessage: "A" }, function ( err, data ) {
+        messageBroker.publish( config.sensorQueue, { serialMessage: "A" }, function ( err, data ) {
             if ( err ) {
                 return done( err );
             }
@@ -37,7 +38,7 @@ var handleSensorReading = function ( messageBroker, logger, app ) {
 
 var handleSystemReading = function ( messageBroker, logger, app ) {
     var getSystemData = function ( done ) {
-        messageBroker.publish( "system.get", {}, function ( err, data ) {
+        messageBroker.publish( config.systemQueue, {}, function ( err, data ) {
             if ( err ) {
                 return done( err );
             }
