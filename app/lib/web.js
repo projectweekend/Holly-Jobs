@@ -67,16 +67,16 @@ var handleSystemReading = function ( messageBroker, logger, app ) {
 };
 
 
-var handleDailyStats = function ( options, logger, app ) {
+var handleStatsJob = function ( options, logger, app ) {
     app.get( options.path, function ( req, res ) {
-        var yesterdayStart = moment().subtract( 1, "day" ).startOf( "day" ).toDate();
-        var yesterdayEnd = moment().subtract( 1, "day" ).endOf( "day" ).toDate();
+        var startDate = moment().subtract( 1, options.type ).startOf( options.type ).toDate();
+        var endDate = moment().subtract( 1, options.type ).endOf( options.type ).toDate();
 
         var statCalcOptions = {
-            startDate: yesterdayStart,
-            endDate: yesterdayEnd,
-            date: yesterdayStart,
-            type: "day"
+            startDate: startDate,
+            endDate: endDate,
+            date: startDate,
+            type: options.type
         };
 
         options.model.calcStatsForDateRange( statCalcOptions, function ( err, data ) {
@@ -146,14 +146,16 @@ module.exports = function ( messageBroker, logger ) {
     handleSensorReading( messageBroker, logger, app );
     handleSystemReading( messageBroker, logger, app );
 
-    handleDailyStats( {
+    handleStatsJob( {
         path: "/job/sensor-stats/day",
-        model: models.SensorReading
+        model: models.SensorReading,
+        type: "day",
     }, logger, app );
 
-    handleDailyStats( {
+    handleStatsJob( {
         path: "/job/system-stats/day",
-        model: models.SystemReading
+        model: models.SystemReading,
+        type: "day",
     }, logger, app );
 
     handleWeeklyStats( {
