@@ -140,8 +140,8 @@ module.exports = function ( messageBroker, logger ) {
 
     var app = express();
 
-    messageBroker.create( "sensor.get" );
-    messageBroker.create( "system.get" );
+    messageBroker.create( config.sensorQueue );
+    messageBroker.create( config.systemQueue );
 
     handleSensorReading( messageBroker, logger, app );
     handleSystemReading( messageBroker, logger, app );
@@ -158,24 +158,28 @@ module.exports = function ( messageBroker, logger ) {
         type: "day",
     }, logger, app );
 
-    handleWeeklyStats( {
+    handleStatsJob( {
         path: "/job/sensor-stats/week",
-        model: models.SensorReading
+        model: models.SensorReading,
+        type: "week",
     }, logger, app );
 
-    handleWeeklyStats( {
+    handleStatsJob( {
         path: "/job/system-stats/week",
-        model: models.SystemReading
+        model: models.SystemReading,
+        type: "week",
     }, logger, app );
 
-    handleMonthlyStats( {
+    handleStatsJob( {
         path: "/job/sensor-stats/month",
-        model: models.SensorReading
+        model: models.SensorReading,
+        type: "month",
     }, logger, app );
 
-    handleMonthlyStats( {
+    handleStatsJob( {
         path: "/job/system-stats/month",
-        model: models.SystemReading
+        model: models.SystemReading,
+        type: "month",
     }, logger, app );
 
     return app;
